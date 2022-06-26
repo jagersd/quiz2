@@ -1,0 +1,1 @@
+Just a quick repo trying to learn a bit of golang in the form of a REST API for a multi player quizzing game. Will likely be removed.
