@@ -3,6 +3,7 @@ package cli
 import (
 	"flag"
 	"fmt"
+	"quiz2/config"
 	"quiz2/models"
 )
 
@@ -17,7 +18,7 @@ func CheckFlags() bool {
 }
 
 func addDefaultData() {
-	models.ConnectDatabase()
+	config.ConnectDatabase()
 
 	fmt.Println("adding items to database")
 
@@ -25,5 +26,5 @@ func addDefaultData() {
 		{Description: "Multiple Choice"},
 		{Description: "Open Question"},
 	}
-	models.DB.Create(&qtypes)
+	config.DB.Create(&qtypes)
 }

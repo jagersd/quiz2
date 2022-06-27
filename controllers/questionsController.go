@@ -2,15 +2,15 @@ package controllers
 
 import (
 	"net/http"
+	"quiz2/config"
+	"quiz2/models"
 
 	"github.com/gin-gonic/gin"
-
-	"quiz2/models"
 )
 
 func GetAllQuestions(c *gin.Context) {
 	var questions []models.Question
-	models.DB.Find(&questions)
+	config.DB.Find(&questions)
 
 	c.JSON(http.StatusOK, gin.H{"data": questions})
 }
@@ -39,21 +39,21 @@ func AddQuestion(c *gin.Context) {
 		Answer:     input.Answer,
 	}
 
-	models.DB.Create(&question)
+	config.DB.Create(&question)
 
 	if question.Type == 1 {
 		answerAsOption := models.Option{
 			QuestionId: question.ID,
 			Option:     input.Answer,
 		}
-		models.DB.Create(&answerAsOption)
+		config.DB.Create(&answerAsOption)
 
 		for _, option := range input.Options {
 			addOption := models.Option{
 				QuestionId: question.ID,
 				Option:     option,
 			}
-			models.DB.Create(&addOption)
+			config.DB.Create(&addOption)
 		}
 		c.JSON(http.StatusOK, gin.H{"data": question, "options": input.Options})
 	} else {

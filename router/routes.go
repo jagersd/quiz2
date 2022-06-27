@@ -2,15 +2,15 @@ package router
 
 import (
 	"net/http"
+	"quiz2/config"
 	"quiz2/controllers"
-	"quiz2/models"
 
 	"github.com/gin-gonic/gin"
 )
 
 func InitRouter() {
 	r := gin.Default()
-	models.ConnectDatabase()
+	config.ConnectDatabase()
 
 	r.GET("/test", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"data": "Yes, we up."})
@@ -26,6 +26,9 @@ func InitRouter() {
 
 	//quiz routes
 	r.POST("/hostquiz", controllers.Initiate)
+	r.POST("/startquiz", controllers.Startquiz)
 
+	//admin routes
+	r.DELETE("/resetdb", controllers.ResetDb)
 	r.Run()
 }

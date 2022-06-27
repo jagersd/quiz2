@@ -1,16 +1,16 @@
-package models
+package config
 
 import (
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 
-	"quiz2/config"
+	"quiz2/models"
 )
 
 var DB *gorm.DB
 
 func ConnectDatabase() {
-	dsn := config.GetDbConn()
+	dsn := GetDbConn()
 	database, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
 	if err != nil {
@@ -18,12 +18,12 @@ func ConnectDatabase() {
 	}
 
 	database.AutoMigrate(
-		&Question{},
-		&Aquiz{},
-		&Option{},
-		&Subject{},
-		&Result{},
-		&Qtype{},
+		&models.Question{},
+		&models.Aquiz{},
+		&models.Option{},
+		&models.Subject{},
+		&models.Result{},
+		&models.Qtype{},
 	)
 
 	DB = database

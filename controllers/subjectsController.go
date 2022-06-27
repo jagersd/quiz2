@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
+	"quiz2/config"
 	"quiz2/models"
 )
 
@@ -25,13 +26,13 @@ func AddSubject(c *gin.Context) {
 		Description: input.Description,
 	}
 
-	models.DB.Create(&subject)
+	config.DB.Create(&subject)
 	c.JSON(http.StatusOK, gin.H{"data": subject})
 }
 
 func GetSubjects(c *gin.Context) {
 	var subjects []models.Subject
-	models.DB.Find(&subjects)
+	config.DB.Find(&subjects)
 
 	c.JSON(http.StatusOK, gin.H{"data": subjects})
 }
