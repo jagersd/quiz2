@@ -52,7 +52,7 @@ func Initiate(c *gin.Context) {
 func Startquiz(c *gin.Context) {
 
 	type startQuizInput struct {
-		QuizSlug string `json:"quizSlug"`
+		QuizSlug string `json:"quizSlug" binding:"required"`
 	}
 
 	var input startQuizInput
@@ -63,6 +63,7 @@ func Startquiz(c *gin.Context) {
 
 	var playerCount int64
 	config.DB.Model(&models.Aquiz{}).Where("quiz_slug = ?", input.QuizSlug).Count(&playerCount)
+	// set solo mode if player count is 1
 	if playerCount == 1 {
 		var quiz models.Aquiz
 		config.DB.Model(&models.Aquiz{}).Select("id").Where("quiz_slug = ?", input.QuizSlug).First(&quiz)
@@ -71,6 +72,33 @@ func Startquiz(c *gin.Context) {
 	config.DB.Model(&models.Aquiz{}).Where("quiz_slug = ?", input.QuizSlug).Update("started", true)
 
 	c.JSON(http.StatusOK, gin.H{"data": input.QuizSlug + " started with " + strconv.FormatInt(int64(playerCount), 10) + " players"})
+}
+
+func Joinquiz(c *gin.Context) {
+
+	type joinInput struct {
+		PlayerName string `json:"playerName" binding:"required"`
+		QuizSlug   string `json:"quizSlug" binding:"required"`
+	}
+
+	var input joinInput
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	}
+
+	var quiz models.Aquiz
+	config.DB.Model(&models.Aquiz{}).Select("id").Where("quiz_slug = ?", input.QuizSlug).First(&quiz)
+
+	result := models.Result{
+		AquizId:    quiz.ID,
+		PlayerName: input.PlayerName,
+		PlayerSlug: helpers.GenerateSlug(),
+		IsHost:     false,
+	}
+	config.DB.Create(&result)
+
+	c.JSON(http.StatusCreated, gin.H{"data": input.QuizSlug})
+
 }
 
 func collectQuestions(subjectId, questionAmount int) string {

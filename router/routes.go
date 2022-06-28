@@ -27,6 +27,7 @@ func InitRouter() {
 	//quiz routes
 	r.POST("/hostquiz", controllers.Initiate)
 	r.POST("/startquiz", controllers.Startquiz)
+	r.POST("/joinquiz", controllers.Joinquiz)
 
 	//admin routes
 	r.DELETE("/resetdb", controllers.ResetDb)
