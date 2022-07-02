@@ -1,0 +1,21 @@
+{{ template "Header"}}
+
+<div class="container">
+    <form action="/hostquiz" method="POST">
+    <label for="host-name">First name:</label>
+    <input type="text" id="host-name" name="playerName">
+    <select class="form-select" name="subjectId">
+        <option selected>Select a Quiz Subject</option>
+        {{range .subjects}}
+        <option value="{{.ID}}">{{.Name}}</option>
+        {{end}}
+    </select>
+    <label for="question-amount">Amount of questions:</label>
+    <input type="number" id="question-amount" name="questionAmount" min="1" max="40">
+    <input type="submit" value="Submit">
+    </form>
+
+</div>
+
+{{ template "Footer"}}
+

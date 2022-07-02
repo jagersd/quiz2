@@ -16,13 +16,13 @@ func Initiate(c *gin.Context) {
 	slug := helpers.GenerateSlug()
 
 	type hostQuizInput struct {
-		PlayerName     string `json:"playerName" binding:"required"`
-		SubjectId      uint   `json:"subjectId" binding:"required"`
-		QuestionAmount uint   `json:"questionAmount"`
+		PlayerName     string `form:"playerName" binding:"required"`
+		SubjectId      uint   `form:"subjectId" binding:"required"`
+		QuestionAmount uint   `form:"questionAmount"`
 	}
 
 	var input hostQuizInput
-	if err := c.ShouldBindJSON(&input); err != nil {
+	if err := c.ShouldBind(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -45,7 +45,7 @@ func Initiate(c *gin.Context) {
 		}
 		config.DB.Create(&result)
 
-		c.JSON(http.StatusCreated, gin.H{"data": slug, "questions": questions})
+		c.HTML(http.StatusCreated, "hostquiz.gohtml", gin.H{"data": slug})
 	}
 }
 

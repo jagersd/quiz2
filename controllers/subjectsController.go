@@ -34,5 +34,5 @@ func GetSubjects(c *gin.Context) {
 	var subjects []models.Subject
 	config.DB.Find(&subjects)
 
-	c.HTML(http.StatusOK, "starthost.gohtml", gin.H{"subjects": subjects})
+	c.HTML(http.StatusOK, "initiate.gohtml", gin.H{"subjects": subjects})
 }
