@@ -1,4 +1,4 @@
-package router
+package main
 
 import (
 	"net/http"
@@ -10,14 +10,21 @@ import (
 
 func InitRouter() {
 	r := gin.Default()
+	r.Static("/static", "ui/static")
+	r.LoadHTMLGlob("ui/*.gohtml")
 	config.ConnectDatabase()
+
+	r.GET("/", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "index.gohtml", "")
+	})
 
 	r.GET("/test", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"data": "Yes, we up."})
 	})
 
+	r.GET("/starthost", controllers.GetSubjects)
+
 	//subject routes
-	r.GET("/allsubjects", controllers.GetSubjects)
 	r.POST("/addsubject", controllers.AddSubject)
 
 	//question routes

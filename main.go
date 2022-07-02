@@ -2,7 +2,6 @@ package main
 
 import (
 	"quiz2/cli"
-	"quiz2/router"
 )
 
 func main() {
@@ -11,6 +10,6 @@ func main() {
 	cliOnly = cli.CheckFlags()
 
 	if !cliOnly {
-		router.InitRouter()
+		InitRouter()
 	}
 }
