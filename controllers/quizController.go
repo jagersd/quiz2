@@ -77,28 +77,46 @@ func Startquiz(c *gin.Context) {
 func Joinquiz(c *gin.Context) {
 
 	type joinInput struct {
-		PlayerName string `json:"playerName" binding:"required"`
-		QuizSlug   string `json:"quizSlug" binding:"required"`
+		PlayerName string `form:"playerName" binding:"required"`
+		QuizSlug   string `form:"quizSlug" binding:"required"`
 	}
 
 	var input joinInput
-	if err := c.ShouldBindJSON(&input); err != nil {
+	if err := c.ShouldBind(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}
 
 	var quiz models.Aquiz
 	config.DB.Model(&models.Aquiz{}).Select("id").Where("quiz_slug = ?", input.QuizSlug).First(&quiz)
 
-	result := models.Result{
+	newResultRecord := models.Result{
 		AquizId:    quiz.ID,
 		PlayerName: input.PlayerName,
 		PlayerSlug: helpers.GenerateSlug(),
 		IsHost:     false,
 	}
-	config.DB.Create(&result)
 
-	c.JSON(http.StatusCreated, gin.H{"data": input.QuizSlug})
+	if quiz.ID != 0 {
+		config.DB.Create(&newResultRecord)
+	}
 
+	c.HTML(http.StatusCreated, "joined.gohtml", gin.H{"quizCode": input.QuizSlug, "playerSlug": newResultRecord.PlayerSlug})
+}
+
+func Waitingroom(c *gin.Context) {
+
+	var quizState models.Aquiz
+	if err := config.DB.Where("quiz_slug = ?", c.Param("quizSlug")).Find(&quizState).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"Error": "Quiz not found"})
+		return
+	}
+
+	var players []string
+	if quizState.ID != 0 {
+		config.DB.Model(&models.Result{}).Select("player_name").Where("aquiz_id =?", quizState.ID).Find(&players)
+	}
+
+	c.JSON(http.StatusOK, gin.H{"quiz": quizState, "players": players})
 }
 
 func collectQuestions(subjectId, questionAmount int) string {

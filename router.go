@@ -27,6 +27,13 @@ func InitRouter() {
 	r.GET("/initiate", controllers.GetSubjects)
 	r.POST("/hostquiz", controllers.Initiate)
 
+	r.GET("/join", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "joinquiz.gohtml", "")
+	})
+
+	r.POST("/joined", controllers.Joinquiz)
+	r.GET("/waitingroom/:quizSlug/:playerSlug", controllers.Waitingroom)
+
 	/*
 		/
 		/ Following routes are meant for API/json requests and responses
@@ -47,7 +54,6 @@ func InitRouter() {
 	//quiz routes
 
 	r.POST("/startquiz", controllers.Startquiz)
-	r.POST("/joinquiz", controllers.Joinquiz)
 
 	//admin routes
 	r.DELETE("/resetdb", controllers.ResetDb)
