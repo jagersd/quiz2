@@ -11,7 +11,7 @@ import (
 func InitRouter() {
 	r := gin.Default()
 	r.Static("/static", "ui/static")
-	r.LoadHTMLGlob("ui/*.gohtml")
+	r.LoadHTMLGlob("ui/html/**/*.gohtml")
 	config.ConnectDatabase()
 
 	/*
@@ -26,19 +26,21 @@ func InitRouter() {
 
 	r.GET("/initiate", controllers.GetSubjects)
 	r.POST("/hostquiz", controllers.Initiate)
+	r.POST("/hostroutine", controllers.HostRoutine)
 
 	r.GET("/join", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "joinquiz.gohtml", "")
 	})
 
 	r.POST("/joined", controllers.Joinquiz)
-	r.GET("/waitingroom/:quizSlug/:playerSlug", controllers.Waitingroom)
 
 	/*
 		/
 		/ Following routes are meant for API/json requests and responses
 		/
 	*/
+	r.GET("/waitingroom/:quizSlug/:playerSlug", controllers.Waitingroom)
+	r.POST("/startquiz", controllers.Startquiz)
 
 	r.GET("/test", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"data": "Yes, we up."})
@@ -50,10 +52,6 @@ func InitRouter() {
 	//question routes
 	r.GET("/allquestions", controllers.GetAllQuestions)
 	r.POST("/addquestion", controllers.AddQuestion)
-
-	//quiz routes
-
-	r.POST("/startquiz", controllers.Startquiz)
 
 	//admin routes
 	r.DELETE("/resetdb", controllers.ResetDb)

@@ -45,20 +45,28 @@ func Initiate(c *gin.Context) {
 		}
 		config.DB.Create(&result)
 
-		c.HTML(http.StatusCreated, "hostquiz.gohtml", gin.H{"data": slug})
+		c.HTML(http.StatusCreated, "hostquiz.gohtml", gin.H{
+			"quizSlug": slug,
+			"hostSlug": result.PlayerSlug,
+		})
 	}
 }
 
 func Startquiz(c *gin.Context) {
 
 	type startQuizInput struct {
-		QuizSlug string `json:"quizSlug" binding:"required"`
+		PlayerSlug string `json:"playerSlug" binding:"required"`
+		QuizSlug   string `json:"quizSlug" binding:"required"`
 	}
 
 	var input startQuizInput
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
+	}
+
+	if input.PlayerSlug != input.QuizSlug {
+		c.JSON(http.StatusExpectationFailed, gin.H{"error": "incorrect party initiated quiz"})
 	}
 
 	var playerCount int64

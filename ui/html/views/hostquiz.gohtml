@@ -1,0 +1,21 @@
+{{ template "Header"}}
+
+<h1 id="quiz-slug">{{.quizSlug}}</h1>
+<h5 id="player-slug">{{.hostSlug}}</h5>
+
+<button onclick="startQuiz()">Lock players</button>
+
+<form action="/hostroutine" method="POST">
+<input type="hidden" id="host-name" name="playerName" value="{{.hostSlug}}">
+<input type="hidden" id="quiz-code" name="quizCode" value="{{.quizSlug}}">
+<input type="hidden" name="stage" value="1">
+
+<input type="submit" value="Start Quizzin">
+</form>
+
+<p>Players joined:</p>
+<ul id="player-list"></ul>
+
+<script src="static/waitingroom.js"></script>
+
+{{ template "Footer"}}
