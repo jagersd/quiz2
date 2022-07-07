@@ -4,4 +4,12 @@
 <p>{{.answer}}</p>
 <p>{{.options}}</p>
 
+<form action="/hostroutine" method="POST">
+<input type="hidden" id="host-name" name="playerName" value="{{.hostSlug}}">
+<input type="hidden" id="quiz-code" name="quizCode" value="{{.quizSlug}}">
+<input type="hidden" name="stage" value="{{.stage}}">
+
+<input type="submit" value="Next question">
+</form>
+
 {{ template "Footer"}}

@@ -65,16 +65,14 @@ func Startquiz(c *gin.Context) {
 		return
 	}
 
-	if input.PlayerSlug != input.QuizSlug {
-		c.JSON(http.StatusExpectationFailed, gin.H{"error": "incorrect party initiated quiz"})
-	}
+	var quiz models.Aquiz
+	config.DB.Model(&models.Aquiz{}).Select("id").Where("quiz_slug = ?", input.QuizSlug).First(&quiz)
 
 	var playerCount int64
-	config.DB.Model(&models.Aquiz{}).Where("quiz_slug = ?", input.QuizSlug).Count(&playerCount)
+	config.DB.Model(&models.Result{}).Where("aquiz_id = ?", quiz.ID).Count(&playerCount)
+
 	// set solo mode if player count is 1
 	if playerCount == 1 {
-		var quiz models.Aquiz
-		config.DB.Model(&models.Aquiz{}).Select("id").Where("quiz_slug = ?", input.QuizSlug).First(&quiz)
 		config.DB.Model(&models.Result{}).Where("aquiz_id = ?", quiz.ID).Update("is_host", false)
 	}
 	config.DB.Model(&models.Aquiz{}).Where("quiz_slug = ?", input.QuizSlug).Update("started", true)
