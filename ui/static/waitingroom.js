@@ -16,7 +16,7 @@ let quizState = setInterval(()=> {
     quizStarted ? clearInterval(quizState) : quizStarted = false;
     callCounter > 100 ? clearInterval(quizState) : callCounter += 1;
     
-    fetch(`http://localhost:3000/waitingroom/${quizSession.quizSlug}/${quizSession.playerSlug}`,
+    fetch(`/waitingroom/${quizSession.quizSlug}/${quizSession.playerSlug}`,
     {
       method: "GET",
       headers: {
@@ -39,7 +39,7 @@ function createItems(players) {
 }
 
 async function startQuiz(){
-  const response = await fetch("http://localhost:3000/startquiz",{
+  const response = await fetch("/startquiz",{
     method: "POST",
     headers: {'Content-Type':'application/json'},
     body:JSON.stringify(quizSession)

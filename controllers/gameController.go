@@ -45,24 +45,26 @@ func HostRoutine(c *gin.Context) {
 		"stage":    input.Stage + 1})
 }
 
-func getLiveResults(c *gin.Context) {
+func GetLiveResults(c *gin.Context) {
 
-	type ResultRequest struct {
-		QuizId   int    `json:"quizId" binding:"required"`
-		QuizSlug string `json:"quizSlug" binding:"required"`
-		Stage    int    `json:"stage" binding:"required"`
+	type apiReponse struct {
+		PlayerName string
+		Result     uint8
 	}
 
-	var input ResultRequest
-	if err := c.ShouldBindJSON(&input); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	var liveResults []apiReponse
+
+	fmt.Printf("%T \n", c.Param("stage"))
+
+	if err := config.DB.Table("results").Select("player_name", fmt.Sprintf("result%v as Result", c.Param("stage"))).
+		Where("aquiz_id = ? AND is_host = ?", c.Param("quizId"), 0).
+		Find(&liveResults).Error; err != nil {
+		c.JSON(http.StatusNotAcceptable, gin.H{"error": err})
+
 		return
 	}
 
-	var liveResults map[string]int
-	config.DB.Model(&models.Result{}).
-		Select("player_name", fmt.Sprintf("result%v", input.Stage)).
-		Find(&liveResults)
+	c.JSON(http.StatusOK, gin.H{"playername": liveResults})
 
 }
 
