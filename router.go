@@ -33,6 +33,7 @@ func InitRouter() {
 	})
 
 	r.POST("/joined", controllers.Joinquiz)
+	r.POST("/participantroutine", controllers.ParticipantRoutine)
 
 	r.GET("/addquiz", controllers.GetAllSubjects)
 	r.POST("/addquiz", controllers.AddQuestion)

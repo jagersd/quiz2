@@ -14,7 +14,7 @@ let callCounter = 0;
 let quizState = setInterval(()=> {
 
     quizStarted ? clearInterval(quizState) : quizStarted = false;
-    callCounter > 100 ? clearInterval(quizState) : callCounter += 1;
+    callCounter > 1000 ? clearInterval(quizState) : callCounter += 1;
     
     fetch(`/waitingroom/${quizSession.quizSlug}/${quizSession.playerSlug}`,
     {
@@ -27,20 +27,22 @@ let quizState = setInterval(()=> {
     .then((response) => response.json())
     .then((responseData) => {
       quizStarted = responseData.quiz.Started;
-      createItems(responseData.players)
+      createItems(responseData.players, quizStarted)
     })
     .catch(error => console.warn(error));
 }, 4000)
 
 
-function createItems(players) {
+function createItems(players, quizStarted) {
   ul.innerHTML = "";
   players.forEach(player => ul.innerHTML += `<li>${player}</>`);
+  if(quizStarted == true){
+    document.getElementById("start-quiz-form").style.display = "block";
+  }
 }
 
 async function startQuiz(){
   document.getElementById("start-quiz-button").style.display = "none";
-  document.getElementById("start-quiz-form").style.display = "block";
   const response = await fetch("/startquiz",{
     method: "POST",
     headers: {'Content-Type':'application/json'},

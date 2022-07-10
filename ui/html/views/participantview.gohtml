@@ -1,11 +1,11 @@
 {{ template "Header"}}
 
-<p>{{.question}}</p>
-<p>{{.answer}}</p>
 <p>{{.options}}</p>
 
-<form action="/hostroutine" method="POST">
-<input type="hidden" id="host-name" name="playerName" value="{{.hostSlug}}">
+<p>{{.type}}</p>
+
+<form action="/participantroutine" method="POST">
+<input type="hidden" id="player-name" name="playerSlug" value="{{.playerSlug}}">
 <input type="hidden" id="quiz-code" name="quizCode" value="{{.quizSlug}}">
 <input type="hidden" id="quiz-stage" name="stage" value="{{.stage}}">
 <input type="hidden" id="quiz-id" value="{{.quizId}}">
@@ -13,11 +13,5 @@
 <input type="submit" value="Next question" id="next-question-btn">
 </form>
 
-<p>Result current question:</p>
-<ul id="player-list"></ul>
 
-<p>Subtotals</p>
-<ul id="subtotals"></ul>
-
-<script src="static/hostroutine.js"></script>
 {{ template "Footer"}}

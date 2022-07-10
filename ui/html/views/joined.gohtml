@@ -3,6 +3,13 @@
 <h1 id="quiz-slug">{{.quizCode}}</h1>
 <h5 id="player-slug">{{.playerSlug}}</h5>
 
+<form id="start-quiz-form" action="/participantroutine" method="POST">
+<input type="hidden" id="player-slug" name="playerName" value="{{.playerSlug}}">
+<input type="hidden" id="quiz-code" name="quizCode" value="{{.quizCode}}">
+<input type="hidden" name="stage" value="1">
+<input type="submit" value="Ready to go!">
+</form>
+
 <ul id="player-list"></ul>
 
 <script src="static/waitingroom.js"></script>
