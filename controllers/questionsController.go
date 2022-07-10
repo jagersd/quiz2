@@ -1,9 +1,12 @@
 package controllers
 
 import (
+	"fmt"
+	"math/rand"
 	"net/http"
 	"quiz2/config"
 	"quiz2/models"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -15,18 +18,30 @@ func GetAllQuestions(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": questions})
 }
 
+func GetAllSubjects(c *gin.Context) {
+	var subjects []models.Subject
+	config.DB.Find(&subjects)
+
+	c.HTML(http.StatusOK, "addquiz.gohtml", gin.H{"subjects": subjects})
+}
+
 func AddQuestion(c *gin.Context) {
 	type addQuestionInput struct {
-		SubjectId  uint     `json:"subjectId" binding:"required"`
-		Type       uint     `json:"type" binding:"required"`
-		Attachment string   `json:"attachment"`
-		Body       string   `json:"body" binding:"required"`
-		Answer     string   `json:"answer" binding:"required"`
-		Options    []string `json:"options"`
+		SubjectId       uint   `form:"subjectId" binding:"required"`
+		Type            uint   `form:"questionType" binding:"required"`
+		Attachment      string `form:"attachment"`
+		Body            string `form:"questionBody" binding:"required"`
+		Answer          string `form:"questionAnswer" binding:"required"`
+		QuestionOption1 string `form:"questionOption1"`
+		QuestionOption2 string `form:"questionOption2"`
+		QuestionOption3 string `form:"questionOption3"`
+		QuestionOption4 string `form:"questionOption4"`
+		QuestionOption5 string `form:"questionOption5"`
+		QuestionOption6 string `form:"questionOption6"`
 	}
 
 	var input addQuestionInput
-	if err := c.ShouldBindJSON(&input); err != nil {
+	if err := c.ShouldBind(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -41,23 +56,34 @@ func AddQuestion(c *gin.Context) {
 
 	config.DB.Create(&question)
 
-	if question.Type == 1 {
-		answerAsOption := models.Option{
-			QuestionId: question.ID,
-			Option:     input.Answer,
-		}
-		config.DB.Create(&answerAsOption)
+	var subjects []models.Subject
+	config.DB.Find(&subjects)
 
-		for _, option := range input.Options {
-			addOption := models.Option{
-				QuestionId: question.ID,
-				Option:     option,
+	if question.Type == 1 {
+		options := []string{input.QuestionOption1,
+			input.QuestionOption2,
+			input.QuestionOption3,
+			input.QuestionOption4,
+			input.QuestionOption5,
+			input.QuestionOption6,
+			input.Answer}
+
+		rand.Seed(time.Now().UnixNano())
+		rand.Shuffle(len(options), func(i, j int) { options[i], options[j] = options[j], options[i] })
+		fmt.Println(options)
+
+		for _, option := range options {
+			if option != "" {
+				addOption := models.Option{
+					QuestionId: question.ID,
+					Option:     option,
+				}
+				config.DB.Create(&addOption)
 			}
-			config.DB.Create(&addOption)
 		}
-		c.JSON(http.StatusOK, gin.H{"data": question, "options": input.Options})
+		c.HTML(http.StatusOK, "addquiz.gohtml", gin.H{"subjects": subjects})
 	} else {
-		c.JSON(http.StatusOK, gin.H{"data": question})
+		c.HTML(http.StatusOK, "addquiz.gohtml", gin.H{"subjects": subjects})
 	}
 
 }

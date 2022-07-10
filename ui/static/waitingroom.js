@@ -39,6 +39,8 @@ function createItems(players) {
 }
 
 async function startQuiz(){
+  document.getElementById("start-quiz-button").style.display = "none";
+  document.getElementById("start-quiz-form").style.display = "block";
   const response = await fetch("/startquiz",{
     method: "POST",
     headers: {'Content-Type':'application/json'},

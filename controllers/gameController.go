@@ -49,22 +49,22 @@ func GetLiveResults(c *gin.Context) {
 
 	type apiReponse struct {
 		PlayerName string
-		Result     uint8
+		Result     *uint8
+		Total      uint
 	}
 
 	var liveResults []apiReponse
 
 	fmt.Printf("%T \n", c.Param("stage"))
 
-	if err := config.DB.Table("results").Select("player_name", fmt.Sprintf("result%v as Result", c.Param("stage"))).
+	if err := config.DB.Table("results").Select("player_name", fmt.Sprintf("result%v as Result", c.Param("stage")), "total").
 		Where("aquiz_id = ? AND is_host = ?", c.Param("quizId"), 0).
 		Find(&liveResults).Error; err != nil {
 		c.JSON(http.StatusNotAcceptable, gin.H{"error": err})
-
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"playername": liveResults})
+	c.JSON(http.StatusOK, gin.H{"results": liveResults})
 
 }
 

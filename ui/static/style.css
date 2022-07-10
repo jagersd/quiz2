@@ -2,3 +2,11 @@
     background-color: teal;
     min-height: 100vh;
 }
+
+#start-quiz-form{
+    display: none;
+}
+
+#add-subject-form{
+    display: none;
+}

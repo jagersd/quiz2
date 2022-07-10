@@ -34,6 +34,9 @@ func InitRouter() {
 
 	r.POST("/joined", controllers.Joinquiz)
 
+	r.GET("/addquiz", controllers.GetAllSubjects)
+	r.POST("/addquiz", controllers.AddQuestion)
+
 	/*
 		/
 		/ Following routes are meant for API/json requests and responses
@@ -53,7 +56,6 @@ func InitRouter() {
 
 	//question routes
 	r.GET("/allquestions", controllers.GetAllQuestions)
-	r.POST("/addquestion", controllers.AddQuestion)
 
 	//admin routes
 	r.DELETE("/resetdb", controllers.ResetDb)

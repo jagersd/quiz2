@@ -11,12 +11,12 @@ import (
 
 func AddSubject(c *gin.Context) {
 	type addSubjectInput struct {
-		Name        string `json:"name" binding:"required"`
-		Description string `json:"description"`
+		Name        string `form:"subjectName" binding:"required"`
+		Description string `form:"description"`
 	}
 
 	var input addSubjectInput
-	if err := c.ShouldBindJSON(&input); err != nil {
+	if err := c.ShouldBind(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -27,7 +27,11 @@ func AddSubject(c *gin.Context) {
 	}
 
 	config.DB.Create(&subject)
-	c.JSON(http.StatusOK, gin.H{"data": subject})
+
+	var subjects []models.Subject
+	config.DB.Find(&subjects)
+
+	c.HTML(http.StatusOK, "addquiz.gohtml", gin.H{"subjects": subjects})
 }
 
 func GetSubjects(c *gin.Context) {
