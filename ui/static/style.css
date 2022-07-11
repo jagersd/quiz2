@@ -14,3 +14,7 @@
 #next-question-btn{
     display: none;
 }
+
+#options-form{
+    display:none;
+}

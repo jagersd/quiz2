@@ -48,6 +48,8 @@ func InitRouter() {
 
 	r.GET("/liveresults/:quizId/:quizSlug/:stage", controllers.GetLiveResults)
 
+	r.GET("/readytoreveal/:quizId/:stage", controllers.RevealNextQuestion)
+
 	r.GET("/test", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"data": "Yes, we up."})
 	})

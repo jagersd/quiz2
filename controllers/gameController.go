@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"quiz2/config"
 	"quiz2/models"
+	"strconv"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -55,8 +56,6 @@ func GetLiveResults(c *gin.Context) {
 
 	var liveResults []apiReponse
 
-	fmt.Printf("%T \n", c.Param("stage"))
-
 	if err := config.DB.Table("results").Select("player_name", fmt.Sprintf("result%v as Result", c.Param("stage")), "total").
 		Where("aquiz_id = ? AND is_host = ?", c.Param("quizId"), 0).
 		Find(&liveResults).Error; err != nil {
@@ -81,7 +80,7 @@ func ParticipantRoutine(c *gin.Context) {
 	lastResult := false
 
 	if input.Stage != 1 {
-		questionId := strings.Split(currentQuiz.Questions, ",")[input.Stage-1]
+		questionId := strings.Split(currentQuiz.Questions, ",")[input.Stage-2]
 		previousQuestion, _ := getQuestion(questionId)
 
 		if previousQuestion.Answer == input.SubmittedAnswer {
@@ -91,7 +90,7 @@ func ParticipantRoutine(c *gin.Context) {
 		processResult(currentQuiz.ID, input.PlayerSlug, input.Stage, lastResult)
 	}
 
-	currentQuestion, options := getQuestion(strings.Split(currentQuiz.Questions, ",")[input.Stage])
+	currentQuestion, options := getQuestion(strings.Split(currentQuiz.Questions, ",")[input.Stage-1])
 
 	c.HTML(http.StatusOK, "participantview.gohtml", gin.H{
 		"playerSlug": input.PlayerSlug,
@@ -103,6 +102,30 @@ func ParticipantRoutine(c *gin.Context) {
 		"quizId":     currentQuiz.ID,
 		"stage":      input.Stage + 1,
 	})
+}
+
+func RevealNextQuestion(c *gin.Context) {
+
+	var result int
+	var response bool
+
+	quizId, err := strconv.Atoi(c.Param("quizId"))
+	if err != nil {
+		c.JSON(http.StatusNotAcceptable, gin.H{"error": err})
+	}
+
+	if err := config.DB.Table("results").Select(fmt.Sprintf("ifnull (result%v , 0)", c.Param("stage"))).
+		Where("aquiz_id = ? AND is_host = ?", quizId, 1).
+		Take(&result).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err})
+		return
+	}
+
+	if result == 1 {
+		response = true
+	}
+
+	c.JSON(http.StatusOK, gin.H{"result": response})
 }
 
 func getQuestion(questionId string) (models.Question, []string) {
@@ -125,20 +148,22 @@ func processResult(currentQuiz uint, playerSlug string, stage int, lastResult bo
 	//check whether response already provided
 	var checker processor
 
-	if err := config.DB.Table("results").Select(fmt.Sprintf("result%v as Result", stage), "total as Total").
+	if err := config.DB.Table("results").Select(fmt.Sprintf("result%v as Result", stage-1), "total as Total").
 		Where("aquiz_id = ? AND player_slug = ?", currentQuiz, playerSlug).
 		Find(&checker).Error; err != nil {
 		return
 	}
 
+	fmt.Printf("checker: %v \n lastresult:%v", checker, lastResult)
+
 	if lastResult == true {
 		checker.Total += 1
 	}
 
-	if checker.Result != nil {
+	if checker.Result == nil {
 		config.DB.Model(&models.Result{}).
 			Where("player_slug = ? AND aquiz_id = ?", playerSlug, currentQuiz).
-			Updates(map[string]interface{}{fmt.Sprintf("result%v", stage): lastResult, "total": checker.Total})
+			Updates(map[string]interface{}{fmt.Sprintf("result%v", stage-1): lastResult, "total": checker.Total})
 	}
 
 }
