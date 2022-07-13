@@ -29,6 +29,13 @@ func HostRoutine(c *gin.Context) {
 	config.DB.Model(&models.Aquiz{}).Where("quiz_slug = ?", input.QuizSlug).
 		First(&currentQuiz)
 
+	//break routine if quiz completed
+	if input.Stage == len(strings.Split(currentQuiz.Questions, ",")) {
+		finalResult := getFinalResult(currentQuiz.ID)
+		c.HTML(http.StatusOK, "results.gohtml", gin.H{"totals": finalResult})
+		return
+	}
+
 	questionId := strings.Split(currentQuiz.Questions, ",")[input.Stage-1]
 	currentQuestion, options := getQuestion(questionId)
 
@@ -83,11 +90,18 @@ func ParticipantRoutine(c *gin.Context) {
 		questionId := strings.Split(currentQuiz.Questions, ",")[input.Stage-2]
 		previousQuestion, _ := getQuestion(questionId)
 
-		if previousQuestion.Answer == input.SubmittedAnswer {
+		if strings.ToLower(previousQuestion.Answer) == strings.ToLower(input.SubmittedAnswer) {
 			lastResult = true
 		}
 
 		processResult(currentQuiz.ID, input.PlayerSlug, input.Stage, lastResult)
+	}
+
+	//break routine if quiz ends
+	if input.Stage == len(strings.Split(currentQuiz.Questions, ",")) {
+		finalResult := getFinalResult(currentQuiz.ID)
+		c.HTML(http.StatusOK, "results.gohtml", gin.H{"totals": finalResult})
+		return
 	}
 
 	currentQuestion, options := getQuestion(strings.Split(currentQuiz.Questions, ",")[input.Stage-1])
@@ -166,4 +180,18 @@ func processResult(currentQuiz uint, playerSlug string, stage int, lastResult bo
 			Updates(map[string]interface{}{fmt.Sprintf("result%v", stage-1): lastResult, "total": checker.Total})
 	}
 
+}
+
+func getFinalResult(quizId uint) []models.Result {
+
+	var results []models.Result
+
+	if err := config.DB.Model(&models.Result{}).
+		Where("aquiz_id = ? AND is_host = ?", quizId, 0).
+		Order("total").
+		Find(&results).Error; err != nil {
+		fmt.Print(err)
+	}
+
+	return results
 }

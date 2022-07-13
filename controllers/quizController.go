@@ -8,6 +8,7 @@ import (
 	"quiz2/models"
 	"reflect"
 	"strconv"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 )
@@ -144,6 +145,10 @@ func collectQuestions(subjectId, questionAmount int) string {
 		questionId := strconv.FormatUint(uint64(question.ID), 10)
 		addQuestion := fmt.Sprintf("%s,", questionId)
 		returnString += addQuestion
+
+		if len(strings.Split(returnString, ",")) > questionAmount {
+			break
+		}
 	}
 
 	return returnString

@@ -1,0 +1,7 @@
+{{ template "Header"}}
+{{range .totals}}
+    <p>{{.PlayerName}} : {{.Total}}</p>
+{{end}}
+
+<a href="/" class="btn btn-secondary" role="button">Back to home page</a>
+{{ template "Footer"}}
