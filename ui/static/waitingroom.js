@@ -35,7 +35,7 @@ let quizState = setInterval(()=> {
 
 function createItems(players, quizStarted) {
   ul.innerHTML = "";
-  players.forEach(player => ul.innerHTML += `<li>${player}</>`);
+  players.forEach(player => ul.innerHTML += `<li><b>${player}</b></>`);
   if(quizStarted == true){
     document.getElementById("start-quiz-form").style.display = "block";
   }

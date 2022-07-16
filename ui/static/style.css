@@ -27,8 +27,11 @@ p, h1, h2, h3, h4, h5, label, span, small{
     color: var(--qsand);
 }
 
-ul{
+ul, li{
     list-style: none;
+    list-style-position:inside;
+    margin:0;
+    padding:0;
 }
 
 li{
@@ -45,7 +48,8 @@ h1, span{
 }
 
 .mybtn{
-    width: 115px;
+    min-width: 115px;
+    max-width: 200px;
     height: 50px;
     background: var(--1blueish);
     margin: 20px;
@@ -106,7 +110,7 @@ select{
   -o-appearance: none;
   appearance: none;
   position: relative;
-  top: 10px;
+  top: 20px;
   right: 0;
   bottom: 0;
   left: 0;
@@ -193,7 +197,8 @@ select{
 
 /*index */
 #add-quiz-btn{
-    margin-top: 80%;
+    margin-top: 100px;
+    max-width: 40vw;
 }
 
 /*add questions menu */
@@ -209,4 +214,19 @@ select{
 #add-question-div select{
     margin-top: 10px;
     padding: 5px;
+}
+
+/*question routine */
+.question-container{
+    text-align: center;
+    padding-top: 25px;
+}
+
+input[type='submit']{
+    margin:20px auto 20px auto;
+}
+
+#participant-view{
+    text-align: center;
+    margin-top: 20vh;
 }

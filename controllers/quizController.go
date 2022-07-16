@@ -105,6 +105,10 @@ func Joinquiz(c *gin.Context) {
 
 	if quiz.ID != 0 {
 		config.DB.Create(&newResultRecord)
+	} else {
+		message := "Quiz code not found"
+		c.HTML(http.StatusOK, "error.gohtml", gin.H{"error": message})
+		return
 	}
 
 	c.HTML(http.StatusCreated, "joined.gohtml", gin.H{"quizCode": input.QuizSlug, "playerSlug": newResultRecord.PlayerSlug})

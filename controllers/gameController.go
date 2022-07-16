@@ -39,18 +39,21 @@ func HostRoutine(c *gin.Context) {
 	questionId := strings.Split(currentQuiz.Questions, ",")[input.Stage-1]
 	currentQuestion, options := getQuestion(questionId)
 
+	questionAmount := fmt.Sprintf("(%v / %v)", input.Stage, len(strings.Split(currentQuiz.Questions, ",")))
+
 	config.DB.Model(&models.Result{}).
 		Where("player_slug = ? AND aquiz_id = ?", input.PlayerSlug, currentQuiz.ID).
 		Update(fmt.Sprintf("result%v", input.Stage), 1)
 
 	c.HTML(http.StatusOK, "hostview.gohtml", gin.H{
-		"question": currentQuestion.Body,
-		"answer":   currentQuestion.Answer,
-		"options":  options,
-		"hostSlug": input.PlayerSlug,
-		"quizSlug": input.QuizSlug,
-		"quizId":   currentQuiz.ID,
-		"stage":    input.Stage + 1})
+		"question":       currentQuestion.Body,
+		"answer":         currentQuestion.Answer,
+		"questionAmount": questionAmount,
+		"options":        options,
+		"hostSlug":       input.PlayerSlug,
+		"quizSlug":       input.QuizSlug,
+		"quizId":         currentQuiz.ID,
+		"stage":          input.Stage + 1})
 }
 
 func GetLiveResults(c *gin.Context) {
@@ -65,6 +68,7 @@ func GetLiveResults(c *gin.Context) {
 
 	if err := config.DB.Table("results").Select("player_name", fmt.Sprintf("result%v as Result", c.Param("stage")), "total").
 		Where("aquiz_id = ? AND is_host = ?", c.Param("quizId"), 0).
+		Order("total desc").
 		Find(&liveResults).Error; err != nil {
 		c.JSON(http.StatusNotAcceptable, gin.H{"error": err})
 		return
@@ -90,7 +94,7 @@ func ParticipantRoutine(c *gin.Context) {
 		questionId := strings.Split(currentQuiz.Questions, ",")[input.Stage-2]
 		previousQuestion, _ := getQuestion(questionId)
 
-		if strings.ToLower(previousQuestion.Answer) == strings.ToLower(input.SubmittedAnswer) {
+		if strings.EqualFold(previousQuestion.Answer, input.SubmittedAnswer) {
 			lastResult = true
 		}
 
@@ -170,7 +174,7 @@ func processResult(currentQuiz uint, playerSlug string, stage int, lastResult bo
 
 	fmt.Printf("checker: %v \n lastresult:%v", checker, lastResult)
 
-	if lastResult == true {
+	if lastResult {
 		checker.Total += 1
 	}
 

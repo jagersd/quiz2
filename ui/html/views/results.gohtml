@@ -1,7 +1,17 @@
 {{ template "Header"}}
+
+<div class="container top-container">
+<h3>Quiz completed</h3>
+<p>Hope you had fun :)</p>
+<p>Results:</p>
 {{range .totals}}
     <p>{{.PlayerName}} : {{.Total}}</p>
 {{end}}
 
-<a href="/" class="btn btn-secondary" role="button">Back to home page</a>
+<a href="/" class="mybtn">Back to home page</a>
+</div>
+
+
+
+
 {{ template "Footer"}}

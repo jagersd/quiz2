@@ -1,7 +1,10 @@
 {{ template "Header"}}
 
+<div class="container top-container">
 <h1 id="quiz-slug">{{.quizCode}}</h1>
-<h5 id="player-slug">{{.playerSlug}}</h5>
+<h5 id="player-slug" style="opacity:0;">{{.playerSlug}}</h5>
+
+<p>Sit tight, the host controlls when the quiz can start!</p>
 
 <form id="start-quiz-form" action="/participantroutine" method="POST">
 <input type="hidden" id="player-slug" name="playerName" value="{{.playerSlug}}">
@@ -11,6 +14,8 @@
 </form>
 
 <ul id="player-list"></ul>
+
+</div>
 
 <script src="static/waitingroom.js"></script>
 

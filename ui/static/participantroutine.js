@@ -1,6 +1,7 @@
 const quizSession = {
     quizId : document.getElementById("quiz-id").value,
-    stage: document.getElementById("quiz-stage").value -1
+    stage: document.getElementById("quiz-stage").value -1,
+    waitMessage: document.getElementById("waiting-message")
 }
 
 let callCounter = 0;
@@ -22,10 +23,11 @@ let liveResults = setInterval(()=> {
       parseResults(responseData.result)
     })
     .catch(error => console.warn(error));
-}, 4000)
+}, 2000)
 
 function parseResults(result) {
     if (result == true){
+        quizSession.waitMessage.style.display = "none";
         document.getElementById("options-form").style.display = "block";
     }
 

@@ -1,23 +1,38 @@
 {{ template "Header"}}
 
-<p>{{.question}}</p>
-<p>{{.answer}}</p>
-<p>{{.options}}</p>
+<div class="container question-container">
 
-<form action="/hostroutine" method="POST">
-<input type="hidden" id="host-name" name="playerName" value="{{.hostSlug}}">
-<input type="hidden" id="quiz-code" name="quizCode" value="{{.quizSlug}}">
-<input type="hidden" id="quiz-stage" name="stage" value="{{.stage}}">
-<input type="hidden" id="quiz-id" value="{{.quizId}}">
+    <h5>Question: {{ .questionAmount}} </h5>
+    <h3>{{.question}}</h3>
+    
+    
+    <ul>
+    {{range .options}}
+    <li><b>{{.}}</b></li>
+    {{end}}
+    </ul>
+    <p>----</p>
+    <p id="answer">Answer: {{.answer}}</p>
 
-<input type="submit" value="Next question" id="next-question-btn">
-</form>
+    <form class="myform" action="/hostroutine" method="POST">
+        <input type="hidden" id="host-name" name="playerName" value="{{.hostSlug}}">
+        <input type="hidden" id="quiz-code" name="quizCode" value="{{.quizSlug}}">
+        <input type="hidden" id="quiz-stage" name="stage" value="{{.stage}}">
+        <input type="hidden" id="quiz-id" value="{{.quizId}}">
+        <small>tip: Don't proceed untill all players have answered this question.</small>
 
-<p>Result current question:</p>
-<ul id="player-list"></ul>
+        <input class="mybtn" type="submit" value="Next question" id="next-question-btn">
 
-<p>Subtotals</p>
-<ul id="subtotals"></ul>
+    </form>
+
+    <p>Result current question:</p>
+    
+    <ul id="player-list"></ul>
+
+    <p>Subtotals</p>
+    <ul id="subtotals"></ul>
+
+</div>
 
 <script src="static/hostroutine.js"></script>
 {{ template "Footer"}}

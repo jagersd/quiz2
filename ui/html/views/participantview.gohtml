@@ -1,36 +1,49 @@
 {{ template "Header"}}
 
-<p>{{.options}}</p>
+<div class="container" id="participant-view">
 
-<p>{{.type}}</p>
+    {{if eq .lastResult false}}
+    <div id="waiting-message">
+        <p class="incorrect">That was incorrect</p>
+        <p class="incorrect">But no worries, the next question is coming up!</p>
+    </div>
+    {{else}}
+    <div id="waiting-message">
+        <p class="correct">Well done! That was correct.</p>
+        <p class="correct">The next question is coming up!</p>
+    </div>
+    {{end}}
 
+    
 
-{{if eq .type 2}}
-<form action="/participantroutine" method="POST" id="options-form">
-<input type="hidden" id="player-name" name="playerName" value="{{.playerSlug}}">
-<input type="hidden" id="quiz-code" name="quizCode" value="{{.quizSlug}}">
-<input type="hidden" id="quiz-stage" name="stage" value="{{.stage}}">
-<input type="hidden" id="quiz-id" value="{{.quizId}}">
-<input type="text" id="submitted-answer" name="answer">
+    {{if eq .type 2}}
+    <form action="/participantroutine" method="POST" id="options-form">
+        <input type="hidden" id="player-name" name="playerName" value="{{.playerSlug}}">
+        <input type="hidden" id="quiz-code" name="quizCode" value="{{.quizSlug}}">
+        <input type="hidden" id="quiz-stage" name="stage" value="{{.stage}}">
+        <input type="hidden" id="quiz-id" value="{{.quizId}}">
+        <input type="text" id="submitted-answer" name="answer">
 
-<input type="submit" value="Next question" id="submit-answer">
-</form>
-{{end}}
+        <input type="submit" value="Submit answer" id="submit-answer">
+    </form>
+    {{end}}
 
-{{if eq .type 1}}
-<form action="/participantroutine" method="POST" id="options-form">
-<input type="hidden" id="player-name" name="playerName" value="{{.playerSlug}}">
-<input type="hidden" id="quiz-code" name="quizCode" value="{{.quizSlug}}">
-<input type="hidden" id="quiz-stage" name="stage" value="{{.stage}}">
-<input type="hidden" id="quiz-id" value="{{.quizId}}">
+    {{if eq .type 1}}
+    <form action="/participantroutine" method="POST" id="options-form">
+        <input type="hidden" id="player-name" name="playerName" value="{{.playerSlug}}">
+        <input type="hidden" id="quiz-code" name="quizCode" value="{{.quizSlug}}">
+        <input type="hidden" id="quiz-stage" name="stage" value="{{.stage}}">
+        <input type="hidden" id="quiz-id" value="{{.quizId}}">
 
-{{range .options}}
-<input type="radio" id="submitted-answer" name="answer" value="{{.}}">
-<label for="{{.}}">{{.}}</label><br>
-{{end}}
+        {{range .options}}
+        <input type="radio" class="option-input radio" id="submitted-answer" name="answer" value="{{.}}">
+        <label for="{{.}}">{{.}}</label><br>
+        {{end}}
 
-<input type="submit" value="Next question" id="submit-answer">
-</form>
-{{end}}
+        <input type="submit" value="Submit answer" id="submit-answer">
+    </form>
+    {{end}}
+
+</div>
 <script src="static/participantroutine.js"></script>
 {{ template "Footer"}}
