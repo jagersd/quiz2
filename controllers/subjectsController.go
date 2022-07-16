@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -35,8 +36,13 @@ func AddSubject(c *gin.Context) {
 }
 
 func GetSubjects(c *gin.Context) {
+
+	var availableSubjects []int
+	config.DB.Model(models.Question{}).Select("subject_id").Group("subject_id").Having("COUNT(subject_id) > 4").Find(&availableSubjects)
+	fmt.Print(availableSubjects)
+
 	var subjects []models.Subject
-	config.DB.Find(&subjects)
+	config.DB.Find(&subjects, availableSubjects)
 
 	c.HTML(http.StatusOK, "initiate.gohtml", gin.H{"subjects": subjects})
 }

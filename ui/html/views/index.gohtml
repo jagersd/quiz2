@@ -1,8 +1,16 @@
 {{ template "Header"}}
-<h1>Welcome to the simplest quizzing website!</h1>
-<div class="container-fluid">
-  <a href="/initiate" class="btn btn-primary" tabindex="-1" role="button">Host quiz</a>
-  <a href="/join" class="btn btn-secondary" tabindex="-1" role="button">Join quiz</a>
-  <a href="/addquiz" class="btn btn-secondary" tabindex="-1" role="button">Create quiz</a>
+<div class="container top-container">
+  <div class="row justify-content-center">
+    <h1>Welcome to the simplest quizzing site!</h1>
+  </div>
+  <div class="row justify-content-center">
+    <a href="/initiate" class="mybtn">Host quiz</a>
+    <a href="/join" class="mybtn">Join quiz</a>
+  </div>
+  <div class="row justify-content-center">
+  <a href="/addquiz" class="mybtn" id="add-quiz-btn">Create quiz</a>
+  </div>
+  
 </div>
+
 {{ template "Footer"}}

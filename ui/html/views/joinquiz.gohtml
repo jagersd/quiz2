@@ -1,18 +1,19 @@
 {{ template "Header"}}
 
-<div class="container">
+<div class="container top-container">
     <form action="/joined" method="POST">
-    <div class="form-group">
-        <label for="playerName">Name</label>
-        <input type="string" class="form-control" id="playerName" aria-describedby="playerNameHelp" placeholder="Your name" name="playerName">
-        <small id="playerNameHelp" class="form-text text-muted">Only used for the host to keep track of the scores.</small>
+    <div>
+        <label for="playerName">Name</label><br>
+        <input type="string" id="playerName" aria-describedby="playerNameHelp" placeholder="Your name" name="playerName"><br>
+        <small id="playerNameHelp">Only used for the host to keep track of the scores.</small>
     </div>
-    <div class="form-group">
-        <label for="quizCode">Quiz Code</label>
-        <input type="string" class="form-control" id="quizCode" name="quizSlug">
+    <div>
+        <label for="quizCode">Quiz Code</label><br>
+        <input type="string" id="quizCode" name="quizSlug" placeholder="Will be told by the host">
     </div>
-    <button type="submit" class="btn btn-primary">Join</button>
+    <button type="submit" class="mybtn">Join</button>
     </form>
+    <a href="/" class="mybtn go-back">Go Back</a>
 </div>
 
 {{ template "Footer"}}

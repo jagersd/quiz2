@@ -1,6 +1,6 @@
 {{ template "Header"}}
 
-<div class="container">
+<div class="container" id="add-question-div">
     <button onclick="showAddSubjectForm()">Add new subject</button>
     <form action="/addsubject" method="POST" id="add-subject-form">
         <label for="subject-name">Subject Name:</label>
@@ -11,15 +11,16 @@
     </form>
 
     <form action="/addquiz" method="POST">
-    <select class="form-select" name="subjectId">
+    <select name="subjectId">
         <option selected>Select a Quiz Subject</option>
         {{range .subjects}}
         <option value="{{.ID}}">{{.Name}}</option>
         {{end}}
-    </select>
-    <input type="radio" name="questionType" id="multiplechoice" value="1" checked onchange="flipQuestionType()">
-    <label for="multiplechoice">Multiple choice</label>
-    <input type="radio" name="questionType" id="openquestion" value="2" onchange="flipQuestionType()">
+    </select><br>
+
+    <input type="radio" name="questionType" class="option-input radio" id="multiplechoice" value="1" checked onchange="flipQuestionType()">
+    <label for="multiplechoice">Multiple choice</label><br>
+    <input type="radio" name="questionType" class="option-input radio" id="openquestion" value="2" onchange="flipQuestionType()">
     <label for="openquestion">Open Question</label><br>
 
     <label for="question-body">Question:</label>
@@ -45,7 +46,7 @@
 
     <input type="submit" value="Submit">
     </form>
-    <a href="/" class="btn btn-secondary" role="button">Home</a>
+    <a href="/" class="mybtn">Home</a>
 </div>
 <script src="static/addquestion.js"></script>
 {{ template "Footer"}}

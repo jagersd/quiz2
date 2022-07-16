@@ -1,9 +1,13 @@
 {{ template "Header"}}
 
+<div class="container top-container">
+<h5>Quiz code:</h5>
 <h1 id="quiz-slug">{{.quizSlug}}</h1>
-<h5 id="player-slug">{{.hostSlug}}</h5>
+<p id="player-slug">{{.hostSlug}}</p>
+<p>Share this with the other players in order for them to join your quiz.</p>
 
-<button id="start-quiz-button" onclick="startQuiz()">Lock players</button>
+
+
 
 <form id="start-quiz-form" action="/hostroutine" method="POST">
 <input type="hidden" id="host-name" name="playerName" value="{{.hostSlug}}">
@@ -13,8 +17,11 @@
 <input type="submit" value="Start Quizzin">
 </form>
 
-<p>Players joined:</p>
+<p><u>Players joined:</u></p>
 <ul id="player-list"></ul>
+
+<button class="mybtn" id="start-quiz-button" onclick="startQuiz()">Lock in</button>
+</div>
 
 <script src="static/waitingroom.js"></script>
 

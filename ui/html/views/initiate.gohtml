@@ -1,20 +1,24 @@
 {{ template "Header"}}
 
-<div class="container">
+<div class="container top-container">
+    <span class="text-center"><u>Setup your quiz session:</u></span>
     <form action="/hostquiz" method="POST">
-    <label for="host-name">First name:</label>
-    <input type="text" id="host-name" name="playerName">
-    <select class="form-select" name="subjectId">
+    <div class="input-container">
+    <label for="host-name">Your name:</label><br>
+    <input type="text" id="host-name" name="playerName"><br>
+
+    <select name="subjectId">
         <option selected>Select a Quiz Subject</option>
         {{range .subjects}}
-        <option value="{{.ID}}">{{.Name}}</option>
+        <option class="myoption" value="{{.ID}}">{{.Name}}</option>
         {{end}}
-    </select>
-    <label for="question-amount">Amount of questions:</label>
-    <input type="number" id="question-amount" name="questionAmount" min="1" max="40">
-    <input type="submit" value="Submit">
+    </select><br>
+    <label for="question-amount">Amount of questions:</label><br>
+    <input type="number" id="question-amount" name="questionAmount" min="1" max="40" placeholder="20">
+    <br>
+    <input class="mybtn" type="submit" value="Let's go!"><br>
     </form>
-    <a href="/" class="btn btn-secondary" role="button">Go Back</a>
+<a href="/" class="mybtn">Go Back</a>
 </div>
 
 {{ template "Footer"}}
