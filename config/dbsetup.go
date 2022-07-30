@@ -7,10 +7,8 @@ import (
 	"quiz2/models"
 )
 
-var DB *gorm.DB
-
 func ConnectDatabase() {
-	dsn := GetDbConn()
+	dsn := getDbConn()
 	database, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
 	if err != nil {

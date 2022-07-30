@@ -9,16 +9,21 @@ import (
 
 func CheckFlags() bool {
 	addData := flag.Bool("d", false, "Add default db data")
+	dbMigrate := flag.Bool("m", false, "Migrate to new database")
 	flag.Parse()
 	if *addData == true {
 		addDefaultData()
 		return true
+	} else if *dbMigrate == true {
+		config.Roachconn(true)
+		return true
 	}
+
 	return false
 }
 
 func addDefaultData() {
-	config.ConnectDatabase()
+	config.Roachconn(false)
 
 	fmt.Println("adding items to database")
 

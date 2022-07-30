@@ -11,3 +11,6 @@ go.work
 
 conf.ini
 gin-bin
+
+quiz2
+prod.config.ini

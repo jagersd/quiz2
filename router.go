@@ -12,7 +12,7 @@ func InitRouter() {
 	r := gin.Default()
 	r.Static("/static", "ui/static")
 	r.LoadHTMLGlob("ui/html/**/*.gohtml")
-	config.ConnectDatabase()
+	config.Roachconn(false)
 
 	/*
 		/

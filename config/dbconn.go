@@ -5,9 +5,12 @@ import (
 	"log"
 
 	"gopkg.in/ini.v1"
+	"gorm.io/gorm"
 )
 
-func GetDbConn() string {
+var DB *gorm.DB
+
+func getDbConn() string {
 	type DbConn struct {
 		driver string
 		user   string
@@ -30,4 +33,12 @@ func GetDbConn() string {
 	}
 
 	return fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8mb4&parseTime=True&loc=Local", c.user, c.pass, c.dsn, c.dbname)
+}
+
+func getRoachConn() string {
+	cfile, err := ini.Load("conf.ini")
+	if err != nil {
+		log.Fatal(err)
+	}
+	return cfile.Section("dbconn").Key("roachstring").String()
 }
