@@ -39,7 +39,7 @@ func HostRoutine(c *gin.Context) {
 	questionId := strings.Split(currentQuiz.Questions, ",")[input.Stage-1]
 	currentQuestion, options := getQuestion(questionId)
 
-	questionAmount := fmt.Sprintf("(%v / %v)", input.Stage, len(strings.Split(currentQuiz.Questions, ",")))
+	questionAmount := fmt.Sprintf("(%v / %v)", input.Stage, len(strings.Split(currentQuiz.Questions, ","))-1)
 
 	config.DB.Model(&models.Result{}).
 		Where("player_slug = ? AND aquiz_id = ?", input.PlayerSlug, currentQuiz.ID).
@@ -67,7 +67,7 @@ func GetLiveResults(c *gin.Context) {
 	var liveResults []apiReponse
 
 	if err := config.DB.Table("results").Select("player_name", fmt.Sprintf("result%v as Result", c.Param("stage")), "total").
-		Where("aquiz_id = ? AND is_host = ?", c.Param("quizId"), 0).
+		Where("aquiz_id = ? AND is_host = ?", c.Param("quizId"), false).
 		Order("total desc").
 		Find(&liveResults).Error; err != nil {
 		c.JSON(http.StatusNotAcceptable, gin.H{"error": err})
@@ -133,7 +133,7 @@ func RevealNextQuestion(c *gin.Context) {
 	}
 
 	if err := config.DB.Table("results").Select(fmt.Sprintf("ifnull (result%v , 0)", c.Param("stage"))).
-		Where("aquiz_id = ? AND is_host = ?", quizId, 1).
+		Where("aquiz_id = ? AND is_host = ?", quizId, true).
 		Take(&result).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err})
 		return
@@ -178,10 +178,15 @@ func processResult(currentQuiz uint, playerSlug string, stage int, lastResult bo
 		checker.Total += 1
 	}
 
+	lastResultInt := 0
+	if lastResult == true {
+		lastResultInt = 1
+	}
+
 	if checker.Result == nil {
 		config.DB.Model(&models.Result{}).
 			Where("player_slug = ? AND aquiz_id = ?", playerSlug, currentQuiz).
-			Updates(map[string]interface{}{fmt.Sprintf("result%v", stage-1): lastResult, "total": checker.Total})
+			Updates(map[string]interface{}{fmt.Sprintf("result%v", stage-1): lastResultInt, "total": checker.Total})
 	}
 
 }
@@ -191,7 +196,7 @@ func getFinalResult(quizId uint) []models.Result {
 	var results []models.Result
 
 	if err := config.DB.Model(&models.Result{}).
-		Where("aquiz_id = ? AND is_host = ?", quizId, 0).
+		Where("aquiz_id = ? AND is_host = ?", quizId, false).
 		Order("total").
 		Find(&results).Error; err != nil {
 		fmt.Print(err)

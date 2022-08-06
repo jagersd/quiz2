@@ -1,7 +1,7 @@
 {{ template "Header"}}
 
 <div class="container" id="add-question-div">
-    <button onclick="showAddSubjectForm()">Add new subject</button>
+    <button class="mybtn" onclick="showAddSubjectForm()">Add new subject</button>
     <form action="/addsubject" method="POST" id="add-subject-form">
         <label for="subject-name">Subject Name:</label>
         <input type="text" id="subject-name" name="subjectName"><br>
@@ -9,6 +9,8 @@
         <input type="text" id="description" name="description"><br>
         <input type="submit" value="Submit">
     </form>
+
+    <hr>
 
     <form action="/addquiz" method="POST">
     <select name="subjectId">
@@ -22,7 +24,7 @@
     <label for="multiplechoice">Multiple choice</label><br>
     <input type="radio" name="questionType" class="option-input radio" id="openquestion" value="2" onchange="flipQuestionType()">
     <label for="openquestion">Open Question</label><br>
-
+    <hr>
     <label for="question-body">Question:</label>
     <input type="text" id="question-body" name="questionBody"><br>
     <label for="question-answer">Answer:</label>

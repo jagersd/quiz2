@@ -3,18 +3,22 @@
 <div class="container" id="participant-view">
 
     {{if eq .lastResult false}}
+        {{if eq .stage 2}}
+            <div id="waiting-message">
+                <p class="incorrect">Hold on to your pants, the quiz is about to get going!</p>
+            </div>
+        {{else}}
     <div id="waiting-message">
         <p class="incorrect">That was incorrect</p>
         <p class="incorrect">But no worries, the next question is coming up!</p>
     </div>
+        {{end}}
     {{else}}
     <div id="waiting-message">
         <p class="correct">Well done! That was correct.</p>
         <p class="correct">The next question is coming up!</p>
     </div>
     {{end}}
-
-    
 
     {{if eq .type 2}}
     <form action="/participantroutine" method="POST" id="options-form">
