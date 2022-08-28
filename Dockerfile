@@ -8,5 +8,5 @@ ADD ui /app/ui/
 
 WORKDIR /app
 
-CMD ["./quiz2","-m","./quiz2","-d","./quiz2"]
+CMD ["./quiz2"]
 
